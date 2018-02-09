@@ -24,16 +24,21 @@ amp = dat(2,:);
 
 
 %uncomment to generate a plot of the data
-figure
+%{
+fig = figure;
+left_color = [1.0 0.0 0.0];
+right_color = [0.0 0.0 1.0];
+set(fig,'defaultAxesColorOrder',[left_color; right_color]);
 title('modulate me captain')
 xlabel('Frequency (Hz)')
 yyaxis left
-semilogx(freq_Vector, amp);
-ylabel('Modulation Ratio')
+semilogx(freq_Vector, amp,'r');
+ylabel('Modulation Ratio', 'Color', 'r')
+ylim([0.0,1.0])
 yyaxis right
-
-semilogx(freq_Vector, phase);
-ylabel('\Delta \Delta phase')
-
+semilogx(freq_Vector, phase,'b');
+ylabel('\Delta \Delta phase', 'Color', 'b')
+ylim([0.0,25.0])
+%}
 end
 
