@@ -1,45 +1,47 @@
-taus=[857 72.1; 860 105; 851 81]';
-alphas=[.114 .0319; .113 .0238; .115 .0259]';
-thetas=[88.2 6.21; 98.7 7.53; 91.4 7.58]';
-rs=[.0737 .106; .0698 .11; .0678 .112]';
+% Generate a list of filenames
+%{
+stem = 'ls -m ';
+dir = '/Users/tyler/Downloads/2-12-18/';
+arg = [stem dir];
+[status, cmdout] = system(arg);
+if status ~= 0
+    disp('your directory is bad and you should feel bad!')
+    return
+end
+flist = strsplit(cmdout, ',');
+len = length(flist);
+fname_list = zeros(len);
+%}
+%for i = 1:len
+tmp = strip(flist(i));
+fname = char(fullfile(dir,tmp));
+
+matrix1 = ReadDataFile('/Users/tyler/Downloads/2-12-18/D1_S1_AD.txt');
+matrix2 = ReadDataFile('/Users/tyler/Downloads/2-12-18/D1_S2_AD.txt');
+matrix3 = ReadDataFile('/Users/tyler/Downloads/2-12-18/D1_S3_AD.txt');
+matrix4 = ReadDataFile('/Users/tyler/Downloads/2-12-18/E3_S1_AD.txt');
+matrix5 = ReadDataFile('/Users/tyler/Downloads/2-12-18/E3_S1_AD.txt');
+matrix6 = ReadDataFile('/Users/tyler/Downloads/2-12-18/E3_S1_AD.txt');
+
+rtot = 0.18; % define total anisotropy
 lowerlim = 75e3;
 upperlim = 30e6;
 step = (upperlim - lowerlim) / 50;
-freq_vec = lowerlim:step:upperlim;
-size=length(freq_vec);
-phase_vectors = zeros(51,3);
-amplitude_vectors = zeros(51,3);
-xvec = [freq_vec; freq_vec; freq_vec;]';
+f = lowerlim:step:upperlim;
+par = [.06 100e-9 7e-9];
+a = [.114 .0321];
+tau = [857e-9 72.1e-9];
+fminsearch(@fit_phase,par);
 
-
-for i = 1:3
-    tau=taus(:,i)';
-    a=alphas(:,i)';
-    r=rs(:,i)';
-    theta=thetas(:,i)';
-    [p,m]=calc_phase(freq_vec,r,theta);
-    disp(m)
-    phase_vectors(:,i)=p(:);
-    amplitude_vectors(:,i)=m(:);
-    
-end
-
-disp(amplitude_vectors)
-% Plotting
-fig = figure;
-left_color = [1.0 0.0 0.0];
-right_color = [0.0 0.0 1.0];
-set(fig,'defaultAxesColorOrder',[left_color; right_color]);
-title('modulate me captain')
-xlabel('Frequency (Hz)')
-yyaxis left
-semilogx(xvec(:,1), amplitude_vectors(:,1));
-ylabel('Modulation Ratio', 'Color', 'r')
-ylim([0.0,1.0])
-yyaxis right
-semilogx(xvec(:,1), phase_vectors(:,1));
-ylabel('\Delta \Delta phase', 'Color', 'b')
-ylim([0.0,25.0])
+%end
 
 
 
+return
+
+function [] = dothething(matrix, v1, v2)
+    a = v1;
+    tau = v2;
+    p = [0.06 100e-9 8e-9];
+    fminsearch(@fit_phase,p)
+return
